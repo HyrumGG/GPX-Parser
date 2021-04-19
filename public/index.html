@@ -1,0 +1,344 @@
+<!-- CIS2750 A3
+ * Name: Hyrum Nantais
+ * Student Number: 1105303 -->
+
+<!-- <a href="simple.gpx" download>simple.gpx</a> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>GPS Data Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Web application for parsing GPX files">
+    <meta name="keywords" content="gpx, gps, gpx parser, gps parser">
+    <meta name="author" content="Hyrum Nantais">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <!-- Custom CSS End -->
+</head>
+<body>
+    <h1>GPS Data Viewer</h1>
+
+    <hr>
+
+    <h3>File Log Panel</h3>
+    <div class="table-wrapper">
+        <table id="file-log-table" border="1" cellpadding="4">
+            <thead>
+                <tr>
+                    <th>File name (click to download)</th>
+                    <th>Version</th>
+                    <th>Creator</th>
+                    <th>Number of waypoints</th>
+                    <th>Number of routes</th>
+                    <th>Number of tracks</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <form ref='uploadForm' id='uploadForm'>
+        <div class="form-group">
+            <input type="file" name="uploadFile" class="btn btn-secondary" accept=".gpx">
+            <input type='submit' id='upload-button' value='Upload' class="btn btn-secondary">
+        </div>
+    </form>
+
+    <hr>
+
+    <h3>GPX View Panel</h3>
+    <select class="custom-select mb-3" id="view-panel-drop-down">
+        <option>No file selected</option>
+    </select>
+
+    <div class="form-group input-group" id="view-panel-options">
+        <form ref='view-panel-show-other' id='view-panel-show-other'>
+            <div class="form-group">
+                <select class="custom-select" id="show-other-drop-down">
+                    <option>Show Other Data of</option>
+                </select>
+            </div>
+        </form>
+        <form ref='view-panel-input' id='view-panel-input'>
+            <div class="form-group input-group">
+                <select class="custom-select" id="rename-drop-down">
+                    <option>Component to rename</option>
+                </select>
+                <input type="text" class="form-control col-md-5" id="rename-new-name" placeholder="New name...">
+                <input type='submit' value='Rename' class="button-gap" class="btn btn-secondary">
+            </div>
+        </form>
+    </div>
+    <div class="table-wrapper">
+        <table id="view-panel-table" border="1" cellpadding="4">
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Name</th>
+                    <th>Number of points</th>
+                    <th>Length</th>
+                    <th>Loop</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+
+    <h3>Create GPX</h3>
+    <form ref='create-gpx' id='create-gpx'>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Filename:</label>
+            <input id="create-filename" type="text" class="form-control" placeholder="File name...">
+        </div>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Version:</label>
+            <input id="create-version" type="text" class="form-control" placeholder="File Version...">
+        </div>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Creator:</label>
+            <input id="create-creator" type="text" class="form-control" placeholder="Creators name...">
+        </div>
+        <div class="form-group">
+            <input type='submit' value='Create GPX' class="btn btn-secondary">
+        </div>
+    </form>
+
+    <hr>
+
+    <h3>Add Route</h3>
+    <div class="form-group">
+
+    </div>
+    <form ref='route-add' id='route-add'>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Add to File:</label>
+            <select class="custom-select" id="route-drop-down">
+                <option>No file selected</option>
+            </select>
+        </div>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Route Name:</label>
+            <input type="text" class="form-control" placeholder="Route name...">
+        </div>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Waypoint:</label>
+            <input type="text" class="form-control" placeholder="Latitude...">
+            <input type="text" class="form-control" placeholder="Longitude...">
+            <button type="button" id="waypoint-add" class="btn btn-secondary">Add Waypoint</button>
+        </div>
+        <div class="form-group">
+            <input type='submit' value='Add Route' class="btn btn-secondary">
+        </div>
+    </form>
+
+    <hr>
+
+    <h3>Find Path Between</h3>
+    <form ref='path-between' id='path-between'>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Start Point:</label>
+            <input type="text" class="form-control" placeholder="Latitude...">
+            <input type="text" class="form-control" placeholder="Longitude...">
+        </div>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">End Point:</label>
+            <input type="text" class="form-control" placeholder="Latitude...">
+            <input type="text" class="form-control" placeholder="Longitude...">
+        </div>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Point Accuracy:</label>
+            <input type="text" class="form-control" placeholder="Accuracy...">
+        </div>
+        <div class="form-group">
+            <input type='submit' value='Find Path' class="btn btn-secondary">
+        </div>
+    </form>
+    <div class="table-wrapper">
+        <table id="path-between-table" border="1" cellpadding="4">
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Name</th>
+                    <th>Number of points</th>
+                    <th>Length</th>
+                    <th>Loop</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <h3>Database Login</h3>
+    <form ref='login' id='login'>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Username:</label>
+            <input id="username" type="text" class="form-control" placeholder="Username...">
+        </div>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Password:</label>
+            <input id="password" type="password" class="form-control" placeholder="Password...">
+        </div>
+        <div class="form-group input-group">
+            <label class="col-form-label col-md-2">Database:</label>
+            <input id="database-name" type="text" class="form-control" placeholder="Database name...">
+        </div>
+        <div class="form-group input-group" id="view-panel-options">
+            <input type='submit' value='Login' class="btn btn-secondary">
+            <div>
+                <button type="button" class="btn btn-secondary" id="store-all" disabled>Store All Files</button>
+                <button type="button" class="btn btn-secondary" id="clear-all" disabled>Clear All Data</button>
+                <button type="button" class="btn btn-secondary" id="display-status" disabled>Display DB Status</button>
+            </div>
+        </div>
+    </form>
+
+    <hr>
+
+    <h3>Display All Routes (Query 1 and 2)</h3>
+    <select class="custom-select mb-3" id="route-query-dropdown">
+        <option>All Files</option>
+    </select>
+
+    <form ref='route-query' id='route-query'>
+        <div class="form-group input-group">
+            <select class="custom-select col-md-4" id="route-query-sort">
+                <option>Sort By Name</option>
+                <option>Sort By Length</option>
+            </select>
+            <input type='submit' value='Execute Query' id="query1" class="btn btn-secondary button-gap" disabled>
+        </div>
+    </form>
+    <div class="table-wrapper">
+        <table id="route-query-table" border="1" cellpadding="4">
+            <thead>
+                <tr>
+                    <th>file_name</th>
+                    <th>route_id</th>
+                    <th>route_name</th>
+                    <th>route_len</th>
+                    <th>gpx_id</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <h3>Display All Points of Route (Query 3)</h3>
+    <select class="custom-select mb-3" id="point-route-query-dropdown">
+        <option>No file selected</option>
+    </select>
+
+    <form ref='point-route-query' id='point-route-query'>
+        <div class="form-group input-group">
+            <input type="text" class="form-control col-md-5" placeholder="Route Name (NULL if missing)">
+            <input type='submit' value='Execute Query' id="query3" class="btn btn-secondary button-gap" disabled>
+        </div>
+    </form>
+    <div class="table-wrapper">
+        <table id="point-route-query-table" border="1" cellpadding="4">
+            <thead>
+                <tr>
+                    <th>point_id</th>
+                    <th>point_index</th>
+                    <th>latitude</th>
+                    <th>longitude</th>
+                    <th>point_name</th>
+                    <th>route_id</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <h3>Display All Points of File (Query 4)</h3>
+    <select class="custom-select mb-3" id="point-file-query-dropdown">
+        <option>No file selected</option>
+    </select>
+
+    <form ref='point-file-query' id='point-file-query'>
+        <div class="form-group input-group">
+            <select class="custom-select col-md-4" id="point-query-sort">
+                <option>Sort By Route Name</option>
+                <option>Sort By Route Length</option>
+            </select>
+            <input type='submit' value='Execute Query' id="query4" class="btn btn-secondary button-gap" disabled>
+        </div>
+    </form>
+    <div class="table-wrapper">
+        <table id="point-file-query-table" border="1" cellpadding="4">
+            <thead>
+                <tr>
+                    <th>point_id</th>
+                    <th>point_index</th>
+                    <th>latitude</th>
+                    <th>longitude</th>
+                    <th>point_name</th>
+                    <th>route_id</th>
+                    <th>route_name</th>
+                    <th>route_len</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <h3>Display N Shortest/Longest Routes (Query 5)</h3>
+    <select class="custom-select mb-3" id="route-longest-query-dropdown">
+        <option>No file selected</option>
+    </select>
+
+    <form ref='route-longest-query' id='route-longest-query'>
+        <div class="form-group input-group">
+            <input type="text" class="form-control col-md-3" placeholder="N...">
+            <select class="custom-select col-md-3" id="route-longest-query-dd">
+                <option>Shortest</option>
+                <option>Longest</option>
+            </select>
+            <select class="custom-select col-md-3" id="route-longest-query-sort">
+                <option>Sort By Name</option>
+                <option>Sort By Length</option>
+            </select>
+            <input type='submit' value='Execute Query' id="query5" class="btn btn-secondary button-gap" disabled>
+        </div>
+    </form>
+    <div class="table-wrapper">
+        <table id="route-longest-query-table" border="1" cellpadding="4">
+            <thead>
+                <tr>
+                    <th>file_name</th>
+                    <th>route_id</th>
+                    <th>route_name</th>
+                    <th>route_len</th>
+                    <th>gpx_id</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Leave me at the bottom of body -->
+    <script src="/index.js"></script>
+</body>
+</html>

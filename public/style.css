@@ -1,0 +1,90 @@
+html {
+    width: 60%;
+    height: 100%;
+    min-height: 100%;
+    margin: 0 auto;
+    font-size: 16px;
+    background-color: #FFFFFF;
+}
+
+body {
+    height: 100%;
+    min-height: 100%;
+    line-height: 1.75;
+    background-color: #FFFFFF;
+}
+
+a:link:hover {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    text-decoration: underline;
+    cursor: pointer;
+    cursor: hand;
+}
+
+input[type=submit],
+button {
+    cursor: pointer;
+    cursor: hand;
+}
+
+@media(max-width: 900px) {
+    html {
+        font-size: 14px !important;
+        width: 80% !important;
+    }
+}
+
+@media(max-width: 480px) {
+    html {
+        font-size: 12px !important;
+        width: 90% !important;
+    }
+}
+
+@media(max-width: 320px) {
+    html {
+        font-size: 12px !important;
+        width: 100% !important;
+    }
+}
+
+table {
+    width: 100% !important;
+    text-align: center;
+    table-layout: initial;
+    white-space: nowrap;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+h3 {
+    margin-bottom: 1rem;
+}
+
+th {
+    padding: 1rem;
+}
+
+#view-panel-options {
+    justify-content: space-between;
+}
+
+.button-gap {
+    margin-left: .25rem;
+}
+
+#waypoint-add {
+    margin-left: .25rem;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    height: 200px;
+    overflow-y: scroll;
+}
